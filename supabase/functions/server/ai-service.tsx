@@ -96,6 +96,13 @@ export class AIService {
       };
       console.log("🔑 Request body:", JSON.stringify(requestBody, null, 2));
       
+      // Add timeout to prevent hanging requests
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        console.error("🔑 OpenAI request timed out after 12 seconds");
+        controller.abort();
+      }, 12000); // 12 second timeout for server-side requests
+      
       const response = await fetch(`${this.baseURL}/chat/completions`, {
         method: "POST",
         headers: {
@@ -103,7 +110,10 @@ export class AIService {
           "Authorization": `Bearer ${this.openAIKey}`,
         },
         body: JSON.stringify(requestBody),
+        signal: controller.signal,
       });
+      
+      clearTimeout(timeoutId);
 
       console.log("🔑 Response status:", response.status);
       console.log("🔑 Response ok:", response.ok);
@@ -123,6 +133,17 @@ export class AIService {
       console.error("🔑 OpenAI API request failed:", error);
       console.error("🔑 Error type:", typeof error);
       console.error("🔑 Error message:", error.message);
+      
+      // Handle timeout and network errors more gracefully
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          throw new Error('OpenAI request timed out. Please try again.');
+        }
+        if (error.message.includes('NetworkError') || error.message.includes('fetch')) {
+          throw new Error('Network error connecting to OpenAI. Please check your connection.');
+        }
+      }
+      
       throw error;
     }
   }

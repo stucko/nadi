@@ -36,6 +36,13 @@ export class AIApi {
     console.log("🔥 Using publicAnonKey:", publicAnonKey?.substring(0, 20) + "...");
     
     try {
+      // Add timeout to prevent hanging
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => {
+        console.error(`🔥 Request to ${endpoint} timed out after 8 seconds`);
+        controller.abort();
+      }, 8000); // Reduce to 8 second timeout
+      
       const response = await fetch(`${BASE_URL}${endpoint}`, {
         method: 'POST',
         headers: {
@@ -43,7 +50,10 @@ export class AIApi {
           'Authorization': `Bearer ${publicAnonKey}`,
         },
         body: JSON.stringify(data),
+        signal: controller.signal,
       });
+      
+      clearTimeout(timeoutId);
 
       console.log("🔥 Response status:", response.status);
       console.log("🔥 Response ok:", response.ok);
@@ -77,6 +87,17 @@ export class AIApi {
     } catch (error) {
       console.error(`🔥 FULL AI API Error (${endpoint}):`, error);
       console.error("🔥 Error stack:", error instanceof Error ? error.stack : "No stack");
+      
+      // Handle timeout and network errors more gracefully
+      if (error instanceof Error) {
+        if (error.name === 'AbortError') {
+          throw new Error('Request timed out. Please try again.');
+        }
+        if (error.message.includes('NetworkError') || error.message.includes('fetch')) {
+          throw new Error('Network error. Please check your connection and try again.');
+        }
+      }
+      
       throw error;
     }
   }

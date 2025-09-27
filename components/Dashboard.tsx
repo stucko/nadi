@@ -1,4 +1,7 @@
 import { useState, useMemo } from "react";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
+import Logo from "./Logo";
+import newBackground from "figma:asset/8c23a32b95e52ef8dab9316cb6f3f297ae344a12.png";
 import {
   Home,
   Calculator,
@@ -143,7 +146,7 @@ function BottomNavigation({
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50">
       <div className="backdrop-blur-md bg-black/20 border-t border-white/20">
-        <div className="flex justify-around items-center py-2 px-4 max-w-md mx-auto">
+        <div className="flex justify-around items-center py-2 px-4 max-w-md lg:max-w-lg mx-auto">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
@@ -190,7 +193,7 @@ function DashboardCard({
 }) {
   return (
     <div
-      className={`backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl p-6 mb-4 ${className}`}
+      className={`backdrop-blur-md bg-white/10 border border-white/20 rounded-2xl p-6 h-fit ${className}`}
     >
       {children}
     </div>
@@ -394,14 +397,6 @@ function AITipCard({
             <div>
               <p className="text-white/90 leading-relaxed text-sm">
                 {tip}
-              </p>
-              {/* Debug info - remove this later */}
-              <p className="text-white/40 text-xs mt-2 border-t border-white/10 pt-2">
-                Debug: Tip length: {tip.length} chars | Contains
-                "LED":{" "}
-                {tip.toLowerCase().includes("led")
-                  ? "Yes"
-                  : "No"}
               </p>
             </div>
           ) : (
@@ -730,13 +725,22 @@ export default function Dashboard({
       commute: onboardingData?.commute,
       preferences: ["energy_saving", "sustainable_transport"],
     }),
-    [country, userEmail, onboardingData],
+    [
+      country, 
+      userEmail, 
+      onboardingData?.city,
+      onboardingData?.electricityUsage,
+      JSON.stringify(onboardingData?.commute) // Use JSON stringify for deep comparison
+    ],
   );
 
   const activityHistory = useMemo(() => {
     // Generate activity history based on user's commute patterns
     const activities = [];
     const commute = onboardingData?.commute;
+    
+    // Use fixed timestamps that don't change on every render
+    const baseTime = 1640995200000; // Fixed timestamp: Jan 1, 2022
 
     // Add activities based on commute patterns
     if (commute?.walkBike && commute.walkBike !== "0") {
@@ -744,7 +748,7 @@ export default function Dashboard({
         type: "transport",
         mode: "bicycle",
         frequency: commute.walkBike,
-        timestamp: Date.now() - 86400000,
+        timestamp: baseTime - 86400000,
       });
     }
     if (commute?.bus && commute.bus !== "0") {
@@ -752,7 +756,7 @@ export default function Dashboard({
         type: "transport",
         mode: "public_transport",
         frequency: commute.bus,
-        timestamp: Date.now() - 172800000,
+        timestamp: baseTime - 172800000,
       });
     }
     if (commute?.car && commute.car !== "0") {
@@ -760,7 +764,7 @@ export default function Dashboard({
         type: "transport",
         mode: "car",
         frequency: commute.car,
-        timestamp: Date.now() - 259200000,
+        timestamp: baseTime - 259200000,
       });
     }
 
@@ -769,7 +773,7 @@ export default function Dashboard({
       activities.push({
         type: "energy",
         usage: onboardingData.electricityUsage,
-        timestamp: Date.now() - 345600000,
+        timestamp: baseTime - 345600000,
       });
     }
 
@@ -779,15 +783,20 @@ export default function Dashboard({
           {
             type: "transport",
             mode: "walking",
-            timestamp: Date.now() - 86400000,
+            timestamp: baseTime - 86400000,
           },
           {
             type: "energy",
             action: "conscious_usage",
-            timestamp: Date.now() - 172800000,
+            timestamp: baseTime - 172800000,
           },
         ];
-  }, [onboardingData]);
+  }, [
+    onboardingData?.commute?.walkBike,
+    onboardingData?.commute?.bus,
+    onboardingData?.commute?.car,
+    onboardingData?.electricityUsage
+  ]);
 
   // Use AI recommendations hook
   const {
@@ -887,83 +896,83 @@ export default function Dashboard({
       {/* Background */}
       <div className="absolute inset-0">
         <img
-          src="https://images.unsplash.com/photo-1626116232947-bb5f8d47f689?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlYXJ0aCUyMHNwYWNlJTIwYmVhdXRpZnVsJTIwdmlld3xlbnwxfHx8fDE3NTg5NjIzNTh8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral"
-          alt="Earth from space"
+          src={newBackground}
+          alt="Beautiful Earth space view"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/30" />
       </div>
 
       {/* Content */}
-      <div className="relative z-10 p-4 sm:p-6 max-w-md mx-auto">
+      <div className="relative z-10 p-4 sm:p-6 lg:p-8 xl:p-10 max-w-md lg:max-w-4xl xl:max-w-6xl mx-auto">
         {/* Header */}
         <div className="pt-8 sm:pt-12 pb-6 flex justify-between items-start">
-          <div>
-            <h1 className="text-white text-xl sm:text-2xl mb-2">
-              Welcome back!
-            </h1>
-            <p className="text-white/80 text-sm sm:text-base">
-              Your eco journey continues
-            </p>
+          <div className="flex items-center gap-3">
+            <Logo size="lg" className="shrink-0" />
+            <div>
+              <h1 className="text-white text-xl sm:text-2xl mb-1">
+                Welcome back!
+              </h1>
+              <p className="text-white/80 text-sm sm:text-base">
+                Your eco journey continues
+              </p>
+            </div>
           </div>
           <button
             onClick={onProfileClick}
             className="h-12 w-12 sm:h-14 sm:w-14 backdrop-blur-md bg-white/10 border border-white/20 rounded-full flex items-center justify-center transition-all duration-200 hover:bg-white/20 hover:scale-105 touch-manipulation"
             aria-label="Profile"
           >
-            <User
-              size={20}
-              className="text-white sm:w-6 sm:h-6"
-            />
+            <User size={20} className="text-white" />
           </button>
         </div>
 
         {/* Dashboard Cards */}
-        <div className="space-y-4">
-          {/* Show baseline setup reminder if no baseline */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4 pb-6">
+          <div className="lg:col-span-2 xl:col-span-3">
+            <NadiScoreCard onNadiClick={handleNadiClick} />
+          </div>
+          
           {!hasBaseline && (
-            <DashboardCard>
-              <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-full bg-[#22C31B]/20 flex items-center justify-center">
-                  <span className="text-xl">🌱</span>
+            <div className="lg:col-span-2 xl:col-span-3 mb-4">
+              <DashboardCard className="border-[#22C31B]/50 bg-[#22C31B]/10">
+                <div className="flex items-center gap-4 mb-4">
+                  <div className="w-12 h-12 rounded-full bg-[#22C31B]/20 flex items-center justify-center">
+                    <Calculator size={24} className="text-[#22C31B]" />
+                  </div>
+                  <div className="flex-1">
+                    <h3 className="text-white text-lg mb-1">Welcome to Nadi!</h3>
+                    <p className="text-white/80 text-sm">
+                      Complete your baseline setup to get personalized eco insights
+                    </p>
+                  </div>
                 </div>
-                <div className="flex-1">
-                  <h3 className="text-white text-lg mb-1">
-                    Welcome to Nadi!
-                  </h3>
-                  <p className="text-white/80 text-sm">
-                    Set up your baseline later for personalized
-                    insights
-                  </p>
-                </div>
-              </div>
-              <button
-                onClick={handleSetBaseline}
-                className="w-full h-12 bg-[#22C31B]/20 hover:bg-[#22C31B]/30 text-white border border-[#22C31B]/30 rounded-xl transition-all duration-200"
-              >
-                Set Up Baseline Later
-              </button>
-            </DashboardCard>
+                <button
+                  onClick={handleSetBaseline}
+                  className="w-full h-12 bg-[#22C31B] hover:bg-[#26CC84] text-white rounded-xl transition-all duration-200 transform hover:scale-105"
+                >
+                  Set Your Baseline
+                </button>
+              </DashboardCard>
+            </div>
           )}
-
-          <NadiScoreCard onNadiClick={handleNadiClick} />
-          <QuestCard
-            onQuestClick={handleQuestClick}
-            country={country}
+          
+          <RecommendedActivityCard
+            onTryThis={handleTryThis}
           />
-
-          {/* Recommended Activity */}
-          <RecommendedActivityCard onTryThis={handleTryThis} />
-
-          {/* AI Eco Tip */}
           <AITipCard
-            tip={carbonTips[0] || ""}
-            isLoading={loading.tips}
+            tip={
+              Array.isArray(carbonTips) && carbonTips.length > 0
+                ? carbonTips[0] || "Try walking or cycling for short trips to reduce your carbon footprint."
+                : typeof carbonTips === 'string' && carbonTips
+                ? carbonTips
+                : "Try walking or cycling for short trips to reduce your carbon footprint."
+            }
+            isLoading={loading?.tips || false}
             onRefresh={refreshTips}
-            error={errors.tips}
+            error={errors?.tips}
           />
-
-          {/* AI-Generated Market Recommendation */}
+          <EcoChatCard />
           <AIMarketRecommendationCard
             recommendation={marketRecommendations}
             isLoading={loading.market}
@@ -971,16 +980,10 @@ export default function Dashboard({
             onRefresh={refreshMarketRecommendations}
             country={country}
           />
-
-          {/* Eco Chat Panel */}
-          <EcoChatCard />
-
-          {/* Estimates Note */}
-          <div className="backdrop-blur-md bg-white/5 border border-white/10 rounded-xl p-4">
-            <p className="text-white/60 text-sm text-center">
-              Estimates. Edit assumptions in Profile.
-            </p>
-          </div>
+          <QuestCard
+            onQuestClick={handleQuestClick}
+            country={country}
+          />
         </div>
       </div>
 

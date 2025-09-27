@@ -6,6 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from ".
 import { Badge } from "./ui/badge";
 import { ArrowLeft, Info } from "lucide-react";
 import { COUNTRIES, getCountryConfig } from "./CountryConfig";
+import Logo from "./Logo";
 
 interface OnboardingData {
   country: string;
@@ -117,6 +118,9 @@ export function OnboardingFlow({ onComplete, onBack, onSkip }: OnboardingFlowPro
         <button onClick={prevStep} className="p-2 -ml-2 bg-white/10 rounded-lg backdrop-blur-sm border border-white/20">
           <ArrowLeft className="w-6 h-6 text-white" />
         </button>
+        <div className="absolute left-1/2 transform -translate-x-1/2">
+          <Logo size="md" />
+        </div>
         <div className="flex space-x-2">
           {[1, 2, 3, 4].map((step) => (
             <div

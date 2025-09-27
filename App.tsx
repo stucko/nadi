@@ -1,7 +1,7 @@
 import { useState } from "react";
 import MainScreen from "./components/MainScreen";
-import SignInScreenSimple from "./components/SignInScreenSimple";
-import SignUpScreenSimple from "./components/SignUpScreenSimple";
+import SignInScreen from "./components/SignInScreen";
+import SignUpScreen from "./components/SignUpScreen";
 
 import { EmailCapture } from "./components/EmailCapture";
 import { OnboardingFlow } from "./components/OnboardingFlow";
@@ -105,17 +105,14 @@ export default function App() {
 
   return (
     <div className="size-full">
-      
       {currentState === 'main' && (
         <MainScreen
           onGetStarted={handleGetStarted}
-          onLogin={handleLogin}
-          onSignUp={handleSignUp}
         />
       )}
       
       {currentState === 'signin' && (
-        <SignInScreenSimple
+        <SignInScreen
           onBack={handleBackToMainFromSignIn}
           onLogin={handleLogin}
           onSignUp={handleGoToSignUp}
@@ -123,7 +120,7 @@ export default function App() {
       )}
       
       {currentState === 'signup' && (
-        <SignUpScreenSimple
+        <SignUpScreen
           onBack={handleBackToMainFromSignUp}
           onSignUp={handleSignUpComplete}
           onSignIn={handleGoToSignIn}

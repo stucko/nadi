@@ -1,10 +1,11 @@
 import { useState, useEffect } from "react";
+import svgPaths from "../imports/svg-9vffe6lhs7";
+import imgDeetouchMediaXuouKyhxFdMUnsplash1 from "figma:asset/233823d9be8d19d8fefa708f4be8b3e136121309.png";
+import Logo from "./Logo";
 import { ChevronRight } from "lucide-react";
 
 interface MainScreenProps {
   onGetStarted: () => void;
-  onLogin: () => void;
-  onSignUp: () => void;
 }
 
 function RotatingText() {
@@ -23,7 +24,7 @@ function RotatingText() {
 
   return (
     <span
-      className="mb-0 bg-gradient-to-r from-[#22C31B] via-[#26CC84] to-[#2AD5ED] bg-clip-text text-transparent transition-all duration-500 ease-in-out"
+      className="bg-gradient-to-r from-[#22C31B] via-[#26CC84] to-[#2AD5ED] bg-clip-text text-transparent transition-all duration-500 ease-in-out font-bold"
       style={{
         WebkitBackgroundClip: "text",
         WebkitTextFillColor: "transparent",
@@ -36,108 +37,68 @@ function RotatingText() {
   );
 }
 
-function Frame4() {
-  return (
-    <div className="absolute h-24 sm:h-[134px] lg:h-[180px] left-0 overflow-hidden top-0 w-80 sm:w-[458px] lg:w-[600px]">
-      <div className="absolute font-bold h-22 sm:h-[128px] lg:h-[180px] leading-[0.94] left-0 not-italic text-6xl sm:text-[136px] lg:text-[180px] top-0 w-80 sm:w-[458px] lg:w-[600px]">
-        <RotatingText />
-      </div>
-    </div>
-  );
-}
-
-function Group75() {
-  return (
-    <div className="absolute contents left-0 top-0">
-      <div className="absolute font-bold leading-[0.93] left-0 not-italic text-6xl sm:text-[136px] lg:text-[180px] text-nowrap text-white top-24 sm:top-[128px] lg:top-[180px] whitespace-pre">
-        <p className="mb-0">Track</p>
-        <p className="mb-0">Your</p>
-        <p className="mb-0">Carbon</p>
-        <p>Footprint</p>
-      </div>
-      <Frame4 />
-    </div>
-  );
-}
-
-function Component1() {
-  return (
-    <div
-      className="absolute h-96 sm:h-[622px] lg:h-[800px] left-4 sm:left-[45px] lg:left-[80px] bottom-40 sm:bottom-[45%] lg:bottom-[40%] w-80 sm:w-[680px] lg:w-[900px]"
-      data-name="Component 1"
-    >
-      <Group75 />
-    </div>
-  );
-}
-
 export default function MainScreen({
   onGetStarted,
-  onLogin,
-  onSignUp,
 }: MainScreenProps) {
   return (
-    <div
-      className="bg-[#232323] relative shadow-[0px_4px_4px_0px_rgba(0,0,0,0.25)] min-h-screen w-full overflow-hidden"
-      data-name="M A I N"
-    >
-      {/* Background Image Placeholder */}
-      <div
-        className="absolute h-full left-[-75px] top-0 w-[150%] sm:w-[584px] lg:w-full bg-gradient-to-br from-green-800 via-green-600 to-blue-500"
-        data-name="background-placeholder"
-      >
-        <div className="absolute inset-0 bg-black/30" />
+    <div className="min-h-screen w-full relative overflow-hidden bg-[#232323]">
+      {/* Background Image - Responsive */}
+      <div className="absolute inset-0">
+        <img
+          alt="Mountain landscape with winding road"
+          className="w-full h-full object-cover"
+          src={imgDeetouchMediaXuouKyhxFdMUnsplash1}
+          loading="eager"
+          decoding="async"
+        />
+        {/* Gradient overlay for better text readability */}
+        <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/40" />
       </div>
 
-      {/* Desktop Layout */}
-      <div className="hidden lg:flex lg:min-h-screen lg:items-center lg:justify-between lg:px-20">
-        {/* Left side - Text */}
-        <div className="lg:flex-1 lg:max-w-2xl">
-          <div className="mb-8">
-            <div className="text-8xl xl:text-9xl font-bold mb-4">
-              <RotatingText />
-            </div>
-            <div className="text-8xl xl:text-9xl font-bold text-white leading-tight">
-              <p className="mb-0">Track</p>
-              <p className="mb-0">Your</p>
-              <p className="mb-0">Carbon</p>
-              <p>Footprint</p>
-            </div>
-          </div>
-          <button
-            onClick={onGetStarted}
-            className="bg-white text-green-800 px-8 py-4 rounded-full font-semibold text-lg hover:bg-gray-100 transition-all duration-200 flex items-center gap-3 group"
-          >
-            Get Started
-            <ChevronRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-          </button>
+      {/* Content Container - Responsive Layout */}
+      <div className="relative z-10 min-h-screen flex flex-col">
+        {/* Header with Logo */}
+        <div className="p-4 sm:p-6 lg:p-8">
+          <Logo size="xl" className="drop-shadow-lg" />
         </div>
 
-        {/* Right side - Visual element or space */}
-        <div className="lg:flex-1 lg:flex lg:justify-center lg:items-center">
-          <div className="w-96 h-96 bg-white/10 rounded-full backdrop-blur-sm border border-white/20 flex items-center justify-center">
-            <div className="text-white/60 text-center">
-              <div className="text-6xl mb-4">🌱</div>
-              <p className="text-xl">Start Your Journey</p>
+        {/* Main Content - Centered */}
+        <div className="flex-1 flex items-center justify-center px-4 sm:px-6 lg:px-8">
+          <div className="w-full max-w-4xl mx-auto text-center">
+            
+            {/* Main Heading */}
+            <div className="space-y-2 mb-8">
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white drop-shadow-2xl leading-tight">
+                <RotatingText />
+              </h1>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white drop-shadow-2xl leading-tight">
+                Track Your
+              </h2>
+              <h2 className="text-4xl sm:text-5xl lg:text-6xl xl:text-7xl font-bold text-white drop-shadow-2xl leading-tight">
+                Carbon Footprint
+              </h2>
+            </div>
+
+            {/* Subtitle */}
+            <p className="text-lg sm:text-xl lg:text-2xl text-white/90 drop-shadow-lg max-w-2xl mx-auto mb-12">
+              Join millions making a difference with Nadi, your personal eco coach
+            </p>
+
+            {/* CTA Button */}
+            <div className="flex justify-center">
+              <button
+                onClick={onGetStarted}
+                className="group w-full sm:w-auto bg-[#22C31B] hover:bg-[#26CC84] text-white px-8 py-4 rounded-2xl transition-all duration-200 transform hover:scale-105 hover:shadow-2xl shadow-lg flex items-center justify-center gap-3 min-w-[200px] max-w-[300px] touch-manipulation"
+              >
+                <span className="text-lg font-semibold">Get Started</span>
+                <ChevronRight size={24} className="group-hover:translate-x-1 transition-transform" />
+              </button>
             </div>
           </div>
         </div>
-      </div>
 
-      {/* Mobile Layout */}
-      <div className="lg:hidden">
-        {/* Main Text Component */}
-        <Component1 />
-
-        {/* Get Started Arrow */}
-        <button
-          onClick={onGetStarted}
-          className="absolute right-4 sm:right-[7.91%] bottom-40 sm:bottom-[65%] w-[38px] h-[41px] hover:scale-110 transition-transform duration-200 z-20 touch-manipulation bg-white/10 rounded-full flex items-center justify-center backdrop-blur-sm"
-          aria-label="Get started"
-          data-name="get-started-button"
-        >
-          <ChevronRight className="w-6 h-6 text-white" />
-        </button>
+        {/* Bottom spacing */}
+        <div className="h-16 lg:h-20" />
       </div>
     </div>
   );

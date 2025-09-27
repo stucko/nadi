@@ -6,6 +6,8 @@ import { Button } from "./ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Switch } from "./ui/switch";
 import { Separator } from "./ui/separator";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
+import newBackground from "figma:asset/8c23a32b95e52ef8dab9316cb6f3f297ae344a12.png";
 import { 
   ArrowLeft, 
   User, 
@@ -21,7 +23,7 @@ import {
   Save
 } from "lucide-react";
 import { getCountryConfig } from "./CountryConfig";
-import { toast } from "sonner";
+import { toast } from "sonner@2.0.3";
 
 interface ProfileProps {
   onBack: () => void;
@@ -48,52 +50,61 @@ interface UserProfile {
     achievements: boolean;
     marketing: boolean;
   };
+  privacy: {
+    dataSharing: boolean;
+    analytics: boolean;
+    location: boolean;
+  };
 }
 
 export default function Profile({ onBack, userEmail, country }: ProfileProps) {
   const [activeTab, setActiveTab] = useState<'account' | 'footprint' | 'privacy'>('account');
+  const [isLoading, setIsLoading] = useState(false);
+  const [showPasswordChange, setShowPasswordChange] = useState(false);
+
   const [profile, setProfile] = useState<UserProfile>({
-    name: "John Doe",
-    email: userEmail || "john.doe@example.com",
+    name: "Eco Warrior",
+    email: userEmail || "user@example.com",
     country: country || "MY",
     city: "Kuala Lumpur",
     language: "en",
-    electricityUsage: "300",
+    electricityUsage: "300-500",
     commute: {
-      car: "20",
+      car: "2",
       motorcycle: "0",
-      bus: "10", 
-      train: "15",
-      walkBike: "30"
+      bus: "3",
+      train: "1",
+      walkBike: "5"
     },
     notifications: {
       tips: true,
       achievements: true,
       marketing: false
+    },
+    privacy: {
+      dataSharing: true,
+      analytics: true,
+      location: false
     }
   });
 
-  const [isLoading, setIsLoading] = useState(false);
-  const [showPasswordChange, setShowPasswordChange] = useState(false);
   const [passwords, setPasswords] = useState({
     current: "",
     new: "",
     confirm: ""
   });
 
-  const config = getCountryConfig(profile.country);
-
   const countries = [
-    { code: 'MY', name: 'Malaysia' },
-    { code: 'SG', name: 'Singapore' },
-    { code: 'US', name: 'United States' },
-    { code: 'GB', name: 'United Kingdom' },
-    { code: 'EU', name: 'European Union' },
-    { code: 'IN', name: 'India' },
-    { code: 'ID', name: 'Indonesia' },
-    { code: 'TH', name: 'Thailand' },
-    { code: 'VN', name: 'Vietnam' },
-    { code: 'PH', name: 'Philippines' }
+    { code: 'MY', name: 'Malaysia', flag: '🇲🇾' },
+    { code: 'SG', name: 'Singapore', flag: '🇸🇬' },
+    { code: 'US', name: 'United States', flag: '🇺🇸' },
+    { code: 'GB', name: 'United Kingdom', flag: '🇬🇧' },
+    { code: 'EU', name: 'European Union', flag: '🇪🇺' },
+    { code: 'IN', name: 'India', flag: '🇮🇳' },
+    { code: 'ID', name: 'Indonesia', flag: '🇮🇩' },
+    { code: 'TH', name: 'Thailand', flag: '🇹🇭' },
+    { code: 'VN', name: 'Vietnam', flag: '🇻🇳' },
+    { code: 'PH', name: 'Philippines', flag: '🇵🇭' }
   ];
 
   const languages = [
@@ -152,19 +163,20 @@ export default function Profile({ onBack, userEmail, country }: ProfileProps) {
   ];
 
   return (
-    <div 
-      className="min-h-screen p-4 pb-24 relative overflow-hidden safe-area"
-      style={{
-        backgroundImage: `url(https://images.unsplash.com/photo-1616712134411-6b6ae89bc3ba?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxlYXJ0aCUyMHNwYWNlJTIwc3RhcnMlMjB1bml2ZXJzZXxlbnwxfHx8fDE3NTg5NjQ2NTN8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral)`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
-      }}
-    >
+    <div className="min-h-screen relative overflow-hidden safe-area">
+      {/* Background */}
+      <div className="absolute inset-0">
+        <img
+          src={newBackground}
+          alt="Beautiful Earth space view"
+          className="w-full h-full object-cover"
+        />
+      </div>
+
       {/* Glassmorphism overlay */}
       <div className="absolute inset-0 bg-black/30 backdrop-blur-sm" />
       
-      <div className="relative z-10 max-w-md mx-auto">
+      <div className="relative z-10 p-4 pb-24 max-w-md mx-auto">
         {/* Header */}
         <div className="flex items-center gap-4 pt-4 sm:pt-8 pb-6">
           <button
@@ -253,7 +265,8 @@ export default function Profile({ onBack, userEmail, country }: ProfileProps) {
               {!showPasswordChange ? (
                 <Button
                   onClick={() => setShowPasswordChange(true)}
-                  className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20"
+                  variant="outline"
+                  className="bg-white/10 border-white/20 text-white hover:bg-white/20"
                 >
                   Change Password
                 </Button>
@@ -265,52 +278,110 @@ export default function Profile({ onBack, userEmail, country }: ProfileProps) {
                       type="password"
                       value={passwords.current}
                       onChange={(e) => setPasswords(prev => ({ ...prev, current: e.target.value }))}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                      className="bg-white/10 border-white/20 text-white"
                     />
                   </div>
-
+                  
                   <div>
                     <Label className="text-white mb-2 block">New Password</Label>
                     <Input
                       type="password"
                       value={passwords.new}
                       onChange={(e) => setPasswords(prev => ({ ...prev, new: e.target.value }))}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                      className="bg-white/10 border-white/20 text-white"
                     />
                   </div>
-
+                  
                   <div>
                     <Label className="text-white mb-2 block">Confirm New Password</Label>
                     <Input
                       type="password"
                       value={passwords.confirm}
                       onChange={(e) => setPasswords(prev => ({ ...prev, confirm: e.target.value }))}
-                      className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
+                      className="bg-white/10 border-white/20 text-white"
                     />
                   </div>
-
-                  <div className="flex gap-3">
-                    <Button
-                      onClick={() => setShowPasswordChange(false)}
-                      className="flex-1 bg-white/10 hover:bg-white/20 text-white border border-white/20"
-                    >
-                      Cancel
-                    </Button>
+                  
+                  <div className="flex gap-2">
                     <Button
                       onClick={handlePasswordChange}
                       disabled={isLoading}
-                      className="flex-1 bg-[#22C31B] hover:bg-[#105D0D] text-white"
+                      className="bg-[#22C31B] hover:bg-[#26CC84] text-white"
                     >
-                      {isLoading ? "Changing..." : "Change Password"}
+                      Update Password
+                    </Button>
+                    <Button
+                      onClick={() => setShowPasswordChange(false)}
+                      variant="outline"
+                      className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+                    >
+                      Cancel
                     </Button>
                   </div>
                 </div>
               )}
             </Card>
+
+            <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6">
+              <h3 className="text-white text-lg mb-4 flex items-center gap-2">
+                <Bell size={20} />
+                Notifications
+              </h3>
+              
+              <div className="space-y-4">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-white">Eco Tips</Label>
+                    <p className="text-white/60 text-sm">Receive daily carbon reduction tips</p>
+                  </div>
+                  <Switch
+                    checked={profile.notifications.tips}
+                    onCheckedChange={(checked) => 
+                      setProfile(prev => ({ 
+                        ...prev, 
+                        notifications: { ...prev.notifications, tips: checked } 
+                      }))
+                    }
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-white">Achievements</Label>
+                    <p className="text-white/60 text-sm">Get notified about milestones</p>
+                  </div>
+                  <Switch
+                    checked={profile.notifications.achievements}
+                    onCheckedChange={(checked) => 
+                      setProfile(prev => ({ 
+                        ...prev, 
+                        notifications: { ...prev.notifications, achievements: checked } 
+                      }))
+                    }
+                  />
+                </div>
+                
+                <div className="flex items-center justify-between">
+                  <div>
+                    <Label className="text-white">Marketing Updates</Label>
+                    <p className="text-white/60 text-sm">Promotions and product news</p>
+                  </div>
+                  <Switch
+                    checked={profile.notifications.marketing}
+                    onCheckedChange={(checked) => 
+                      setProfile(prev => ({ 
+                        ...prev, 
+                        notifications: { ...prev.notifications, marketing: checked } 
+                      }))
+                    }
+                  />
+                </div>
+              </div>
+            </Card>
           </div>
         )}
 
-        {/* Carbon Footprint Settings */}
+        {/* Carbon Settings */}
         {activeTab === 'footprint' && (
           <div className="space-y-6">
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6">
@@ -329,7 +400,7 @@ export default function Profile({ onBack, userEmail, country }: ProfileProps) {
                     <SelectContent>
                       {countries.map((country) => (
                         <SelectItem key={country.code} value={country.code}>
-                          {country.name}
+                          {country.flag} {country.name}
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -342,7 +413,6 @@ export default function Profile({ onBack, userEmail, country }: ProfileProps) {
                     value={profile.city}
                     onChange={(e) => setProfile(prev => ({ ...prev, city: e.target.value }))}
                     className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
-                    placeholder="Enter your city"
                   />
                 </div>
               </div>
@@ -355,19 +425,22 @@ export default function Profile({ onBack, userEmail, country }: ProfileProps) {
               </h3>
               
               <div>
-                <Label className="text-white mb-2 block">
-                  Monthly Electricity Usage ({config.currency}/month)
-                </Label>
-                <Input
-                  type="number"
-                  value={profile.electricityUsage}
-                  onChange={(e) => setProfile(prev => ({ ...prev, electricityUsage: e.target.value }))}
-                  className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
-                  placeholder="e.g. 300"
-                />
-                <p className="text-white/60 text-sm mt-1">
-                  This helps us calculate your energy footprint more accurately
-                </p>
+                <Label className="text-white mb-2 block">Monthly Electricity Usage (kWh)</Label>
+                <Select 
+                  value={profile.electricityUsage} 
+                  onValueChange={(value) => setProfile(prev => ({ ...prev, electricityUsage: value }))}
+                >
+                  <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="0-100">0-100 kWh</SelectItem>
+                    <SelectItem value="100-300">100-300 kWh</SelectItem>
+                    <SelectItem value="300-500">300-500 kWh</SelectItem>
+                    <SelectItem value="500-1000">500-1000 kWh</SelectItem>
+                    <SelectItem value="1000+">1000+ kWh</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
             </Card>
 
@@ -378,73 +451,70 @@ export default function Profile({ onBack, userEmail, country }: ProfileProps) {
               </h3>
               
               <div className="space-y-4">
-                <p className="text-white/80 text-sm mb-4">
-                  How many kilometers do you travel per week using each mode?
-                </p>
-
                 <div>
-                  <Label className="text-white mb-2 block">Car (km/week)</Label>
-                  <Input
-                    type="number"
-                    value={profile.commute.car}
-                    onChange={(e) => setProfile(prev => ({ 
+                  <Label className="text-white mb-2 block">Car (days per week)</Label>
+                  <Select 
+                    value={profile.commute.car} 
+                    onValueChange={(value) => setProfile(prev => ({ 
                       ...prev, 
-                      commute: { ...prev.commute, car: e.target.value }
+                      commute: { ...prev.commute, car: value } 
                     }))}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
-                  />
+                  >
+                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[0,1,2,3,4,5,6,7].map(days => (
+                        <SelectItem key={days} value={days.toString()}>
+                          {days} {days === 1 ? 'day' : 'days'}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
-                  <Label className="text-white mb-2 block">Motorcycle (km/week)</Label>
-                  <Input
-                    type="number"
-                    value={profile.commute.motorcycle}
-                    onChange={(e) => setProfile(prev => ({ 
+                  <Label className="text-white mb-2 block">Public Transport (days per week)</Label>
+                  <Select 
+                    value={profile.commute.bus} 
+                    onValueChange={(value) => setProfile(prev => ({ 
                       ...prev, 
-                      commute: { ...prev.commute, motorcycle: e.target.value }
+                      commute: { ...prev.commute, bus: value } 
                     }))}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
-                  />
+                  >
+                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[0,1,2,3,4,5,6,7].map(days => (
+                        <SelectItem key={days} value={days.toString()}>
+                          {days} {days === 1 ? 'day' : 'days'}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
-                  <Label className="text-white mb-2 block">{config.transportModes.bus} (km/week)</Label>
-                  <Input
-                    type="number"
-                    value={profile.commute.bus}
-                    onChange={(e) => setProfile(prev => ({ 
+                  <Label className="text-white mb-2 block">Walking/Cycling (days per week)</Label>
+                  <Select 
+                    value={profile.commute.walkBike} 
+                    onValueChange={(value) => setProfile(prev => ({ 
                       ...prev, 
-                      commute: { ...prev.commute, bus: e.target.value }
+                      commute: { ...prev.commute, walkBike: value } 
                     }))}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-white mb-2 block">{config.transportModes.rail} (km/week)</Label>
-                  <Input
-                    type="number"
-                    value={profile.commute.train}
-                    onChange={(e) => setProfile(prev => ({ 
-                      ...prev, 
-                      commute: { ...prev.commute, train: e.target.value }
-                    }))}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
-                  />
-                </div>
-
-                <div>
-                  <Label className="text-white mb-2 block">Walking/Cycling (km/week)</Label>
-                  <Input
-                    type="number"
-                    value={profile.commute.walkBike}
-                    onChange={(e) => setProfile(prev => ({ 
-                      ...prev, 
-                      commute: { ...prev.commute, walkBike: e.target.value }
-                    }))}
-                    className="bg-white/10 border-white/20 text-white placeholder:text-white/60"
-                  />
+                  >
+                    <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {[0,1,2,3,4,5,6,7].map(days => (
+                        <SelectItem key={days} value={days.toString()}>
+                          {days} {days === 1 ? 'day' : 'days'}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
             </Card>
@@ -456,54 +526,56 @@ export default function Profile({ onBack, userEmail, country }: ProfileProps) {
           <div className="space-y-6">
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6">
               <h3 className="text-white text-lg mb-4 flex items-center gap-2">
-                <Bell size={20} />
-                Notifications
+                <Shield size={20} />
+                Data & Privacy
               </h3>
               
               <div className="space-y-4">
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label className="text-white">Eco Tips</Label>
-                    <p className="text-white/60 text-sm">Daily environmental tips and recommendations</p>
+                    <Label className="text-white">Data Sharing</Label>
+                    <p className="text-white/60 text-sm">Share anonymized data to improve our services</p>
                   </div>
                   <Switch
-                    checked={profile.notifications.tips}
-                    onCheckedChange={(checked) => setProfile(prev => ({
-                      ...prev,
-                      notifications: { ...prev.notifications, tips: checked }
-                    }))}
+                    checked={profile.privacy.dataSharing}
+                    onCheckedChange={(checked) => 
+                      setProfile(prev => ({ 
+                        ...prev, 
+                        privacy: { ...prev.privacy, dataSharing: checked } 
+                      }))
+                    }
                   />
                 </div>
-
-                <Separator className="bg-white/20" />
-
+                
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label className="text-white">Achievement Updates</Label>
-                    <p className="text-white/60 text-sm">Notifications when you earn badges or reach milestones</p>
+                    <Label className="text-white">Analytics</Label>
+                    <p className="text-white/60 text-sm">Help us understand how you use the app</p>
                   </div>
                   <Switch
-                    checked={profile.notifications.achievements}
-                    onCheckedChange={(checked) => setProfile(prev => ({
-                      ...prev,
-                      notifications: { ...prev.notifications, achievements: checked }
-                    }))}
+                    checked={profile.privacy.analytics}
+                    onCheckedChange={(checked) => 
+                      setProfile(prev => ({ 
+                        ...prev, 
+                        privacy: { ...prev.privacy, analytics: checked } 
+                      }))
+                    }
                   />
                 </div>
-
-                <Separator className="bg-white/20" />
-
+                
                 <div className="flex items-center justify-between">
                   <div>
-                    <Label className="text-white">Marketing Communications</Label>
-                    <p className="text-white/60 text-sm">Updates about new features and eco-friendly products</p>
+                    <Label className="text-white">Location Services</Label>
+                    <p className="text-white/60 text-sm">Use location for better recommendations</p>
                   </div>
                   <Switch
-                    checked={profile.notifications.marketing}
-                    onCheckedChange={(checked) => setProfile(prev => ({
-                      ...prev,
-                      notifications: { ...prev.notifications, marketing: checked }
-                    }))}
+                    checked={profile.privacy.location}
+                    onCheckedChange={(checked) => 
+                      setProfile(prev => ({ 
+                        ...prev, 
+                        privacy: { ...prev.privacy, location: checked } 
+                      }))
+                    }
                   />
                 </div>
               </div>
@@ -512,20 +584,20 @@ export default function Profile({ onBack, userEmail, country }: ProfileProps) {
             <Card className="bg-white/10 backdrop-blur-sm border-white/20 p-6">
               <h3 className="text-white text-lg mb-4 flex items-center gap-2">
                 <Trash2 size={20} />
-                Data Management
+                Account Management
               </h3>
               
               <div className="space-y-4">
                 <Button
-                  className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/20"
-                  onClick={() => toast.info("Data export will be available soon")}
+                  variant="outline"
+                  className="w-full bg-white/10 border-white/20 text-white hover:bg-white/20"
                 >
                   Export My Data
                 </Button>
                 
                 <Button
-                  className="w-full bg-red-500/20 hover:bg-red-500/30 text-red-300 border border-red-500/30"
-                  onClick={() => toast.error("Account deletion requires email confirmation")}
+                  variant="destructive"
+                  className="w-full bg-red-600 hover:bg-red-700 text-white"
                 >
                   Delete Account
                 </Button>
@@ -539,18 +611,20 @@ export default function Profile({ onBack, userEmail, country }: ProfileProps) {
           <Button
             onClick={handleSave}
             disabled={isLoading}
-            className="w-full h-14 bg-gradient-to-r from-[#22C31B] to-[#26CC84] hover:from-[#105D0D] hover:to-[#22C31B] text-white rounded-xl flex items-center justify-center gap-2"
+            className="w-full h-14 bg-[#22C31B] hover:bg-[#26CC84] text-white transition-all duration-200 transform hover:scale-105"
           >
-            <Save size={20} />
-            {isLoading ? "Saving..." : "Save Changes"}
+            {isLoading ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Saving...
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Save size={20} />
+                Save Changes
+              </div>
+            )}
           </Button>
-        </div>
-
-        {/* Estimates Note */}
-        <div className="mt-6 backdrop-blur-md bg-white/5 border border-white/10 rounded-xl p-4">
-          <p className="text-white/60 text-sm text-center">
-            All carbon footprint calculations are estimates based on your settings and activities.
-          </p>
         </div>
       </div>
     </div>

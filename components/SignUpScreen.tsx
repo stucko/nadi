@@ -4,7 +4,8 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Card } from "./ui/card";
 import { ArrowLeft, Eye, EyeOff, Mail, Lock, User } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "sonner@2.0.3";
+import Logo from "./Logo";
 
 interface SignUpScreenProps {
   onBack: () => void;
@@ -103,6 +104,9 @@ export default function SignUpScreen({ onBack, onSignUp, onSignIn }: SignUpScree
         {/* Sign Up Card */}
         <Card className="bg-white/10 backdrop-blur-md border-white/20 p-8">
           <div className="text-center mb-8">
+            <div className="flex justify-center mb-4">
+              <Logo size="lg" />
+            </div>
             <h1 className="text-white text-3xl mb-2">Join Nadi</h1>
             <p className="text-white/80 text-lg">
               Start your eco journey today

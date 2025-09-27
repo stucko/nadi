@@ -60,7 +60,7 @@ export function useAIRecommendations({
   const stableActivityHistory = useMemo(() => {
     if (!activityHistory || !Array.isArray(activityHistory)) return [];
     return activityHistory.slice(0, 5); // limit to last 5 activities to prevent huge payloads
-  }, [activityHistory?.length, activityHistory?.[0]?.type]); // only re-run if length or first item type changes
+  }, [JSON.stringify(activityHistory?.slice(0, 5))]); // stringify first 5 for stable comparison
 
   const fetchCarbonTips = useCallback(async () => {
     // Check cooldown
@@ -101,7 +101,7 @@ export function useAIRecommendations({
     } finally {
       setLoading(prev => ({ ...prev, tips: false }));
     }
-  }, [stableCountry, stableUserProfile, stableActivityHistory, lastFetchTime.tips]);
+  }, [stableCountry, stableUserProfile, stableActivityHistory]);
 
   useEffect(() => {
     // Only fetch if we have valid dependencies
@@ -113,12 +113,17 @@ export function useAIRecommendations({
     
     // More restrictive conditions to prevent unnecessary calls
     if (stableCountry && (stableUserProfile || stableActivityHistory?.length > 0)) {
-      console.log("🔧 Conditions met, calling fetchCarbonTips...");
-      fetchCarbonTips();
+      console.log("🔧 Conditions met, calling fetchCarbonTips with delay...");
+      // Add a small delay to prevent rapid successive calls
+      const timeoutId = setTimeout(() => {
+        fetchCarbonTips();
+      }, 1000);
+      
+      return () => clearTimeout(timeoutId);
     } else {
       console.log("🔧 Insufficient data for fetch, skipping");
     }
-  }, [stableCountry, stableUserProfile, stableActivityHistory, fetchCarbonTips]);
+  }, [stableCountry, stableUserProfile, stableActivityHistory]);
 
   const fetchMarketRecommendations = useCallback(async () => {
     // Check cooldown
@@ -148,27 +153,40 @@ export function useAIRecommendations({
     } finally {
       setLoading(prev => ({ ...prev, market: false }));
     }
-  }, [stableCountry, stableUserProfile, stableActivityHistory, lastFetchTime.market]);
+  }, [stableCountry, stableUserProfile, stableActivityHistory]);
 
   useEffect(() => {
     // Only fetch if we have valid dependencies  
     if (stableCountry && (stableUserProfile || stableActivityHistory?.length > 0)) {
-      fetchMarketRecommendations();
+      // Add delay to prevent rapid successive calls
+      const timeoutId = setTimeout(() => {
+        fetchMarketRecommendations();
+      }, 1500); // Slightly longer delay for market recommendations
+      
+      return () => clearTimeout(timeoutId);
     }
-  }, [stableCountry, stableUserProfile, stableActivityHistory, fetchMarketRecommendations]);
+  }, [stableCountry, stableUserProfile, stableActivityHistory]);
 
   const refreshTips = useCallback(async () => {
     console.log("🔄 Manual refresh triggered, clearing current tips...");
     setCarbonTips([]); // Clear current tips
     setErrors(prev => ({ ...prev, tips: null })); // Clear current errors
     setLastFetchTime(prev => ({ ...prev, tips: 0 })); // Reset cooldown
-    await fetchCarbonTips();
-  }, [fetchCarbonTips]);
+    
+    // Call fetchCarbonTips with a slight delay to ensure state updates
+    setTimeout(() => {
+      fetchCarbonTips();
+    }, 200);
+  }, [stableCountry, stableUserProfile, stableActivityHistory]);
 
   const refreshMarketRecommendations = useCallback(async () => {
     setLastFetchTime(prev => ({ ...prev, market: 0 })); // Reset cooldown
-    await fetchMarketRecommendations();  
-  }, [fetchMarketRecommendations]);
+    
+    // Call fetchMarketRecommendations with a slight delay
+    setTimeout(() => {
+      fetchMarketRecommendations();
+    }, 200);
+  }, [stableCountry, stableUserProfile, stableActivityHistory]);
 
   return {
     carbonTips,
