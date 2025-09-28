@@ -1,4 +1,4 @@
-import Vector from "../imports/Vector";
+import nadiLogo from "../assets/nadi_logo.png";
 
 interface LogoProps {
   size?: "sm" | "md" | "lg" | "xl";
@@ -14,8 +14,10 @@ export default function Logo({ size = "md", className = "" }: LogoProps) {
   };
 
   return (
-    <div className={`${sizeClasses[size]} ${className}`}>
-      <Vector />
-    </div>
+    <img
+      src={nadiLogo}
+      alt="Nadi Logo"
+      className={`${sizeClasses[size]} ${className} object-contain`}
+    />
   );
 }

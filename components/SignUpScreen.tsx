@@ -4,7 +4,7 @@ import { Input } from "./ui/input";
 import { Label } from "./ui/label";
 import { Card } from "./ui/card";
 import { ArrowLeft, Eye, EyeOff, Mail, Lock, User } from "lucide-react";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import Logo from "./Logo";
 
 interface SignUpScreenProps {

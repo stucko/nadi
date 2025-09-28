@@ -1,7 +1,6 @@
 import { useState, useMemo } from "react";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
 import Logo from "./Logo";
-import newBackground from "figma:asset/8c23a32b95e52ef8dab9316cb6f3f297ae344a12.png";
+import dashboardBg from "../assets/dashboard_bg.png";
 import {
   Home,
   Calculator,
@@ -896,8 +895,8 @@ export default function Dashboard({
       {/* Background */}
       <div className="absolute inset-0">
         <img
-          src={newBackground}
-          alt="Beautiful Earth space view"
+          src={dashboardBg}
+          alt="Dashboard Background"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/10 to-black/30" />

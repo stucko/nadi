@@ -1,8 +1,8 @@
 import { useState } from "react";
-import svgPaths from "../imports/svg-fcrqcz63lb";
-import imgDeetouchMediaXuouKyhxFdMUnsplash1 from "figma:asset/233823d9be8d19d8fefa708f4be8b3e136121309.png";
+import svgPaths from "../imports/svg-fcrqcz63lb.ts";
 import Logo from "./Logo";
 import { ArrowLeft } from "lucide-react";
+import dashboardBg from "../assets/dashboard_bg.png";
 
 interface SignInScreenProps {
   onBack: () => void;
@@ -55,8 +55,8 @@ export default function SignInScreen({
       {/* Background Image */}
       <div className="absolute inset-0">
         <img
-          src={imgDeetouchMediaXuouKyhxFdMUnsplash1}
-          alt="Beautiful Earth space view"
+          src={dashboardBg}
+          alt="Sign In Background"
           className="w-full h-full object-cover"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-black/20 via-black/40 to-black/60" />

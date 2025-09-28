@@ -6,8 +6,7 @@ import { Button } from "./ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select";
 import { Switch } from "./ui/switch";
 import { Separator } from "./ui/separator";
-import { ImageWithFallback } from "./figma/ImageWithFallback";
-import newBackground from "figma:asset/8c23a32b95e52ef8dab9316cb6f3f297ae344a12.png";
+import dashboardBg from "../assets/dashboard_bg.png";
 import { 
   ArrowLeft, 
   User, 
@@ -23,7 +22,7 @@ import {
   Save
 } from "lucide-react";
 import { getCountryConfig } from "./CountryConfig";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 
 interface ProfileProps {
   onBack: () => void;
@@ -167,8 +166,8 @@ export default function Profile({ onBack, userEmail, country }: ProfileProps) {
       {/* Background */}
       <div className="absolute inset-0">
         <img
-          src={newBackground}
-          alt="Beautiful Earth space view"
+          src={dashboardBg}
+          alt="Profile Background"
           className="w-full h-full object-cover"
         />
       </div>

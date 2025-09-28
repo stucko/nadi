@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
-import svgPaths from "../imports/svg-9vffe6lhs7";
-import imgDeetouchMediaXuouKyhxFdMUnsplash1 from "figma:asset/233823d9be8d19d8fefa708f4be8b3e136121309.png";
 import Logo from "./Logo";
 import { ChevronRight } from "lucide-react";
+import dashboardBg from "../assets/dashboard_bg.png";
 
 interface MainScreenProps {
   onGetStarted: () => void;
@@ -45,9 +44,9 @@ export default function MainScreen({
       {/* Background Image - Responsive */}
       <div className="absolute inset-0">
         <img
-          alt="Mountain landscape with winding road"
+          alt="Main Screen Background"
           className="w-full h-full object-cover"
-          src={imgDeetouchMediaXuouKyhxFdMUnsplash1}
+          src={dashboardBg}
           loading="eager"
           decoding="async"
         />

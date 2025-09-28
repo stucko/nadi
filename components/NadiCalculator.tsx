@@ -18,7 +18,7 @@ import {
   Target
 } from "lucide-react";
 import { getCountryConfig } from "./CountryConfig";
-import { toast } from "sonner@2.0.3";
+import { toast } from "sonner";
 import { AIApi } from "../utils/ai-api";
 
 interface CircularGaugeProps {
