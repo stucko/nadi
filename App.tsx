@@ -156,7 +156,7 @@ export default function App() {
           userEmail={userEmail}
           onProfileClick={handleProfileClick}
           country={onboardingData?.country}
-          onboardingData={onboardingData}
+          onboardingData={onboardingData ?? undefined}
         />
       )}
       

@@ -1,8 +1,11 @@
 import { useState } from "react";
-import { AIApi } from "../utils/ai-api";
-import { useAIConfig } from "../utils/ai-config";
+import { Flame, Leaf, Loader2, RefreshCw, Zap } from "lucide-react";
+import { useAIRecommendations } from "./hooks/useAIRecommendations";
+
 import { projectId, publicAnonKey } from "../utils/supabase/info";
 import { Button } from "./ui/button";
+import { useAIConfig } from "../utils/ai-config";
+import { AIApi } from "../utils/ai-api";
 
 export function DebugAI() {
   const [clearing, setClearing] = useState(false);
